@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  /* Reuse core styles */
+  nav:not(.custom-navbar), .navbar:not(.custom-navbar), .bg-dark { display: none !important; }
+  :root { --spice: #F29F05; --card-dark: rgba(0, 0, 0, 0.50); --input-bg: rgba(255, 255, 255, 0.1); --input-border: rgba(255, 255, 255, 0.2); --text-white: #ffffff; --text-muted: #e0e0e0; }
+  body { margin: 0; padding: 0; background-color: #050505; font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text-white); overflow-x: hidden; }
+
+  /* Region Background */
+  .hero-bg-image { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: url('https://images.pexels.com/photos/941861/pexels-photo-941861.jpeg?auto=compress&cs=tinysrgb&w=2000'); background-size: cover; background-position: center; z-index: -2; }
+  .hero-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: -1; }
+
+  .custom-navbar { position: fixed; top: 0; left: 0; width: 100%; padding: 0.8rem 3rem; z-index: 100; display: flex; justify-content: space-between; align-items: center; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .nav-left { display: flex; align-items: center; gap: 3rem; }
+  .brand-logo { color: white; font-weight: 700; font-family: 'Poppins', sans-serif; text-decoration: none; font-size: 1.5rem; }
+  .brand-logo span { color: var(--spice); }
+  .nav-dropdown { position: relative; display: inline-block; padding: 1rem 0; }
+  .dropdown-trigger { color: #fff; font-weight: 600; font-size: 0.95rem; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.3s; display: flex; align-items: center; gap: 6px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+  .dropdown-trigger:hover { color: var(--spice); }
+  .dropdown-menu { display: none; position: absolute; top: 100%; left: 0; background-color: rgba(20, 20, 20, 0.95); min-width: 200px; box-shadow: 0 8px 16px rgba(0,0,0,0.5); border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); z-index: 1000; padding: 0.5rem 0; }
+  .nav-dropdown:hover .dropdown-menu { display: block; }
+  .dropdown-menu a { color: #e0e0e0; padding: 12px 20px; text-decoration: none; display: block; font-size: 0.9rem; font-weight: 500; transition: 0.2s; }
+  .dropdown-menu a:hover { background-color: var(--spice); color: black; }
+  .btn-logout { padding: 0.5rem 1.2rem; border: 1px solid rgba(255,255,255,0.4); border-radius: 50px; color: #fff; text-decoration: none; font-size: 0.85rem; transition: 0.3s; }
+  .btn-logout:hover { border-color: var(--spice); color: var(--spice); }
+
+  .hero-section { min-height: 100vh; display: flex; align-items: center; padding: 6rem 0 2rem 0; justify-content: center; }
+  .hero-card { position: relative; z-index: 2; width: 80vw; max-width: 1100px; background: var(--card-dark); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.15); border-radius: 30px; padding: 3rem 4rem; box-shadow: 0 20px 60px rgba(0,0,0,0.6); height: auto; min-height: 60vh; animation: fadeUp 0.8s ease-out; }
+  .hero-card h3 { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 3rem; color: white; margin-bottom: 0.5rem; letter-spacing: -1px; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+  .hero-card p.desc { color: var(--text-muted); margin-bottom: 3rem; font-size: 1.1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+
+  /* Horizontal Grid */
+  .row-grid { display: flex; align-items: center; gap: 3rem; margin-bottom: 1.5rem; width: 100%; }
+  .input-group { display: flex; align-items: center; gap: 1.5rem; flex: 1; }
+  
+  /* NEW Full Width Row for Preference */
+  .full-width-row { width: 100%; margin-bottom: 2.5rem; display: flex; align-items: center; gap: 1.5rem; }
+
+  .form-label { font-size: 0.9rem; font-weight: 700; color: var(--spice); text-transform: uppercase; letter-spacing: 1px; margin: 0; white-space: nowrap; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+  .form-select { background: var(--input-bg); border: 1px solid var(--input-border); color: white; border-radius: 12px; padding: 0.8rem 1rem; width: 100%; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; cursor: pointer; height: 50px; }
+  .form-select:focus { outline: none; border-color: var(--spice); background: rgba(0, 0, 0, 0.8); box-shadow: 0 0 10px rgba(242, 159, 5, 0.2); }
+  .form-select option { background-color: #1a1a1a; color: white; padding: 10px; }
+  
+  /* Input text field styling */
+  .form-control { background: var(--input-bg); border: 1px solid var(--input-border); color: white; border-radius: 8px; padding: 0.6rem 1rem; font-family: 'Plus Jakarta Sans', sans-serif; transition: 0.3s; font-size: 1rem; height: 45px; }
+  .form-control-wide { width: 100%; }
+  .form-control:focus { outline: none; border-color: var(--spice); background: rgba(0, 0, 0, 0.6); box-shadow: 0 0 10px rgba(242, 159, 5, 0.2); }
+
+  .btn-container { display: flex; gap: 1.5rem; margin-top: 2rem; max-width: 600px; }
+  .btn-primary { flex: 2; background: var(--spice); color: #000; border: none; padding: 1rem; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; font-size: 1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+  .btn-primary:hover { background: white; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(242, 159, 5, 0.4); }
+  .btn-secondary { flex: 1; background: rgba(0,0,0,0.3); color: white; border: 2px solid rgba(255,255,255,0.3); padding: 0; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.3s; text-decoration: none; text-align: center; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+  .btn-secondary:hover { border-color: var(--spice); color: var(--spice); background: rgba(0,0,0,0.6); }
+
+  hr { border: 0; border-top: 1px solid rgba(255,255,255,0.2); margin: 3rem 0 2rem 0; }
+  h5.result-title { color: white; font-weight: 700; margin-bottom: 1.5rem; font-size: 1.3rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+  #result { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 2rem; color: #fff; font-family: 'Courier New', monospace; font-size: 1rem; min-height: 150px; max-height: 400px; overflow-y: auto; white-space: pre-wrap; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
+  #result::-webkit-scrollbar { width: 8px; }
+  #result::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 4px; }
+  #result::-webkit-scrollbar-thumb { background: rgba(242, 159, 5, 0.3); border-radius: 4px; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  @media (max-width: 992px) { .hero-section { justify-content: center; padding: 7rem 1rem 2rem 1rem; } .hero-card { width: 95%; border-radius: 24px; padding: 2rem; } .row-grid, .full-width-row { flex-direction: column; align-items: flex-start; gap: 1.5rem; } .input-group { width: 100%; justify-content: space-between; flex-direction: column; align-items: flex-start; gap: 0.5rem; } .form-select { width: 100%; } .form-control-wide { width: 100%; } .btn-container { flex-direction: column; max-width: 100%; } }
+</style>
+
+<div class="hero-bg-image"></div>
+<div class="hero-overlay"></div>
+
+<nav class="custom-navbar">
+  <div class="nav-left">
+    <a href="{{ url_for('home') }}" class="brand-logo">Recipe <span>Restro</span></a>
+    <div class="nav-dropdown">
+      <div class="dropdown-trigger">Switch Search <span class="arrow-down">▼</span></div>
+      <div class="dropdown-menu">
+        <a href="{{ url_for('choose_protein') }}">By Protein</a>
+        <a href="{{ url_for('choose_energy') }}">By Energy</a>
+        <a href="{{ url_for('choose_carbs') }}">By Carbs</a>
+        <a href="{{ url_for('choose_recipe_title') }}">By Title</a>
+        <a href="{{ url_for('choose_include_exclude') }}">Custom Filter</a>
+        <div style="border-top:1px solid rgba(255,255,255,0.1); margin:4px 0;"></div>
+        <a href="{{ url_for('choose') }}">Dashboard</a>
+      </div>
+    </div>
+  </div>
+  <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+</nav>
+
+<div class="hero-section">
+  <div class="hero-card">
+    <h3>Diet by Region</h3>
+    <p class="desc">Explore global cuisines tailored to your specific dietary preferences.</p>
+
+    <form id="region-form">
+      <div class="row-grid">
+        <div class="input-group">
+          <label class="form-label">Region</label>
+          <select id="region" class="form-select">
+            <option value="">-- Choose Region --</option>
+            <option>Australian</option><option>Belgian</option><option>Canadian</option>
+            <option>Caribbean</option><option>Central American</option><option>Chinese and Mongolian</option>
+            <option>Deutschland</option><option>Eastern European</option><option>French</option>
+            <option>Greek</option><option>Indian Subcontinent</option><option>Irish</option>
+            <option>Italian</option><option>Japanese</option><option>Korean</option>
+            <option>Mexican</option><option>Middle Eastern</option><option>Northern Africa</option>
+            <option>Rest Africa</option><option>Scandinavian</option><option>South American</option>
+            <option>Southeast Asian</option><option>Spanish and Portuguese</option>
+            <option>Thai</option><option>UK</option><option>US</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label class="form-label">Diet</label>
+          <select id="diet" class="form-select">
+            <option value="">-- Choose Diet --</option>
+            <option value="vegan">Vegan (No Animal Products)</option>
+            <option value="pescetarian">Pescetarian (Fish & Seafood)</option>
+            <option value="ovo_vegetarian">Ovo Vegetarian (Includes Eggs)</option>
+            <option value="lacto_vegetarian">Lacto Vegetarian (Includes Dairy)</option>
+            <option value="ovo_lacto_vegetarian">Ovo-Lacto Vegetarian (Includes Eggs & Dairy)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="full-width-row">
+        <label class="form-label">Exclude Dishes (Optional)</label>
+        <input type="text" class="form-control form-control-wide" id="user_prefrence" placeholder="e.g. Spicy food, Sushi, Burgers">
+      </div>
+
+      <div class="btn-container">
+        <button type="submit" class="btn-primary">Find Recipes</button>
+        <a href="{{ url_for('choose') }}" class="btn-secondary">Back</a>
+      </div>
+    </form>
+
+    <hr>
+    <h5 class="result-title">Search Results</h5>
+    <pre id="result">Results will appear here...</pre>
+  </div>
+</div>
+
+<script>
+document.getElementById('region-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  const payload = {
+    region: document.getElementById('region').value || '',
+    diet: document.getElementById('diet').value || '',
+    // Added user preference
+    user_prefrence: document.getElementById('user_prefrence').value || ''
+  };
+  
+  const resEl = document.getElementById('result');
+  const searchBtn = document.querySelector('.btn-primary');
+  
+  resEl.textContent = 'Searching database...';
+  resEl.style.opacity = '0.5';
+  searchBtn.innerHTML = 'Searching...';
+  searchBtn.disabled = true;
+  
+  try {
+    const r = await fetch('/api/region', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await r.json();
+    resEl.textContent = JSON.stringify(data, null, 2);
+    resEl.style.opacity = '1';
+  } catch (err) {
+    resEl.textContent = 'Error: ' + err;
+    resEl.style.color = '#ff6b6b';
+    resEl.style.opacity = '1';
+  } finally {
+    searchBtn.textContent = 'Find Recipes';
+    searchBtn.disabled = false;
+  }
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  /* Reuse core styles */
+  nav:not(.custom-navbar), .navbar:not(.custom-navbar), .bg-dark { display: none !important; }
+  :root { --spice: #F29F05; --card-dark: rgba(0, 0, 0, 0.50); --input-bg: rgba(255, 255, 255, 0.05); --input-border: rgba(255, 255, 255, 0.1); --text-white: #ffffff; --text-muted: #e0e0e0; }
+  body { margin: 0; padding: 0; background-color: #050505; font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text-white); overflow-x: hidden; }
+
+  /* Background */
+  .hero-bg-image { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: url('https://images.pexels.com/photos/1101248/pexels-photo-1101248.jpeg'); background-size: cover; background-position: center; z-index: -2; }
+  .hero-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65); z-index: -1; }
+
+  .custom-navbar { position: fixed; top: 0; left: 0; width: 100%; padding: 0.8rem 3rem; z-index: 100; display: flex; justify-content: space-between; align-items: center; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .nav-left { display: flex; align-items: center; gap: 3rem; }
+  .brand-logo { color: white; font-weight: 700; font-family: 'Poppins', sans-serif; text-decoration: none; font-size: 1.5rem; }
+  .brand-logo span { color: var(--spice); }
+  .nav-dropdown { position: relative; display: inline-block; padding: 1rem 0; }
+  .dropdown-trigger { color: #fff; font-weight: 600; font-size: 0.95rem; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.3s; display: flex; align-items: center; gap: 6px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+  .dropdown-trigger:hover { color: var(--spice); }
+  .dropdown-menu { display: none; position: absolute; top: 100%; left: 0; background-color: rgba(20, 20, 20, 0.95); min-width: 200px; box-shadow: 0 8px 16px rgba(0,0,0,0.5); border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); z-index: 1000; padding: 0.5rem 0; }
+  .nav-dropdown:hover .dropdown-menu { display: block; }
+  .dropdown-menu a { color: #e0e0e0; padding: 12px 20px; text-decoration: none; display: block; font-size: 0.9rem; font-weight: 500; transition: 0.2s; }
+  .dropdown-menu a:hover { background-color: var(--spice); color: black; }
+  .btn-logout { padding: 0.5rem 1.2rem; border: 1px solid rgba(255,255,255,0.4); border-radius: 50px; color: #fff; text-decoration: none; font-size: 0.85rem; transition: 0.3s; }
+  .btn-logout:hover { border-color: var(--spice); color: var(--spice); }
+
+  .hero-section { min-height: 100vh; display: flex; align-items: center; padding: 7rem 0 3rem 0; justify-content: center; }
+  .hero-card { position: relative; z-index: 2; width: 85vw; max-width: 1200px; background: var(--card-dark); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.15); border-radius: 30px; padding: 3rem 4rem; box-shadow: 0 20px 60px rgba(0,0,0,0.6); height: auto; animation: fadeUp 0.8s ease-out; }
+  .hero-card h3 { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 3rem; color: white; margin-bottom: 0.5rem; letter-spacing: -1px; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+  .hero-card p.desc { color: var(--text-muted); margin-bottom: 2rem; font-size: 1.1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+
+  .grid-2x2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
+  .form-label { font-size: 0.85rem; font-weight: 700; color: var(--spice); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; display: block; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+  
+  .form-select { background: var(--input-bg); border: 1px solid var(--input-border); color: white; border-radius: 12px; padding: 0.8rem; width: 100%; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.95rem; height: 180px; }
+  .form-select:focus { outline: none; border-color: var(--spice); box-shadow: 0 0 10px rgba(242, 159, 5, 0.2); }
+  .form-select option { padding: 4px 8px; margin-bottom: 2px; background: rgba(0,0,0,0.5); border-radius: 4px; }
+  .form-select option:checked { background-color: var(--spice) !important; color: black !important; }
+  .form-text { font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-top: 0.4rem; }
+
+  .bottom-row { display: flex; gap: 2rem; margin-bottom: 1.5rem; align-items: flex-end; }
+  .full-width-row { width: 100%; margin-bottom: 2rem; display: flex; flex-direction: column; } /* Changed to column for simple stack */
+
+  .input-group { width: 100%; }
+  .form-control { background: var(--input-bg); border: 1px solid var(--input-border); color: white; border-radius: 8px; padding: 0.8rem 1rem; width: 100%; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; transition: 0.3s; font-size: 1rem; }
+  .form-control:focus { outline: none; border-color: var(--spice); background: rgba(0, 0, 0, 0.6); }
+
+  .btn-container { display: flex; gap: 1.5rem; max-width: 600px; margin-top: 1rem; }
+  .btn-primary { flex: 2; background: var(--spice); color: #000; border: none; padding: 1rem; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; font-size: 1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+  .btn-primary:hover { background: white; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(242, 159, 5, 0.4); }
+  .btn-secondary { flex: 1; background: rgba(0,0,0,0.3); color: white; border: 2px solid rgba(255,255,255,0.3); padding: 0; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.3s; text-decoration: none; text-align: center; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+  .btn-secondary:hover { border-color: var(--spice); color: var(--spice); background: rgba(0,0,0,0.6); }
+
+  hr { border: 0; border-top: 1px solid rgba(255,255,255,0.2); margin: 3rem 0 2rem 0; }
+  h5.result-title { color: white; font-weight: 700; margin-bottom: 1.5rem; font-size: 1.3rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+  #result { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 2rem; color: #fff; font-family: 'Courier New', monospace; font-size: 1rem; min-height: 150px; max-height: 400px; overflow-y: auto; white-space: pre-wrap; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
+  #result::-webkit-scrollbar { width: 8px; }
+  #result::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 4px; }
+  #result::-webkit-scrollbar-thumb { background: rgba(242, 159, 5, 0.3); border-radius: 4px; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  @media (max-width: 992px) { .grid-2x2 { grid-template-columns: 1fr; gap: 1.5rem; } .hero-card { width: 95%; padding: 2rem; } .bottom-row { flex-direction: column; gap: 1rem; } .btn-container { flex-direction: column; max-width: 100%; } }
+</style>
+
+<div class="hero-bg-image"></div>
+<div class="hero-overlay"></div>
+
+<nav class="custom-navbar">
+  <div class="nav-left">
+    <a href="{{ url_for('home') }}" class="brand-logo">Recipe <span>Restro</span></a>
+    <div class="nav-dropdown">
+      <div class="dropdown-trigger">Switch Search <span class="arrow-down">▼</span></div>
+      <div class="dropdown-menu">
+        <a href="{{ url_for('choose_protein') }}">By Protein</a>
+        <a href="{{ url_for('choose_energy') }}">By Energy</a>
+        <a href="{{ url_for('choose_carbs') }}">By Carbs</a>
+        <a href="{{ url_for('choose_region') }}">By Region</a>
+        <a href="{{ url_for('choose_recipe_title') }}">By Title</a>
+        <div style="border-top:1px solid rgba(255,255,255,0.1); margin:4px 0;"></div>
+        <a href="{{ url_for('choose') }}">Dashboard</a>
+      </div>
+    </div>
+  </div>
+  <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+</nav>
+
+<div class="hero-section">
+  <div class="hero-card">
+    <h3>Custom Filter</h3>
+    <p class="desc">Curate your meal by including ingredients you love and banning the ones you hate.</p>
+
+    <form id="include-exclude-form">
+      <div class="grid-2x2">
+        <div class="input-col">
+          <label class="form-label">Include Ingredients</label>
+          <select id="includeIngredients" class="form-select" multiple size="8">
+            <option>water</option><option>cinnamon</option><option>breadcrumb</option><option>flour tortilla</option>
+            <option>lemon juice</option><option>lime juice</option><option>white wine</option><option>red wine</option>
+            <option>flour</option><option>purpose flour</option><option>soy sauce</option><option>Tomato sauce</option>
+            <option>butter</option><option>milk</option><option>vegetable broth</option><option>cream mushroom soup</option>
+            <option>sesame oil</option><option>avocado</option><option>steak</option><option>salmon fillet</option>
+            <option>broccoli</option><option>artichoke heart</option><option>lemon</option><option>orange juice</option>
+            <option>mushroom</option><option>button mushroom</option><option>garlic clove</option><option>garlic</option>
+            <option>vanilla</option><option>black bean</option><option>cornstarch</option><option>corn</option>
+            <option>egg</option><option>beef</option><option>almond</option><option>walnut</option><option>bay leaf</option>
+            <option>black olive</option><option>olive oil</option><option>vegetable oil</option><option>shallot</option>
+            <option>shrimp</option><option>black pepper</option><option>pepper</option><option>onion</option><option>tomato</option>
+          </select>
+          <div class="form-text">Hold Ctrl/Cmd to select multiple.</div>
+        </div>
+
+        <div class="input-col">
+          <label class="form-label">Exclude Ingredients</label>
+          <select id="excludeIngredients" class="form-select" multiple size="8">
+            <option>water</option><option>cinnamon</option><option>breadcrumb</option><option>flour tortilla</option>
+            <option>lemon juice</option><option>lime juice</option><option>white wine</option><option>red wine</option>
+            <option>flour</option><option>purpose flour</option><option>soy sauce</option><option>Tomato sauce</option>
+            <option>butter</option><option>milk</option><option>vegetable broth</option><option>cream mushroom soup</option>
+            <option>sesame oil</option><option>avocado</option><option>steak</option><option>salmon fillet</option>
+            <option>broccoli</option><option>artichoke heart</option><option>lemon</option><option>orange juice</option>
+            <option>mushroom</option><option>button mushroom</option><option>garlic clove</option><option>garlic</option>
+            <option>vanilla</option><option>black bean</option><option>cornstarch</option><option>corn</option>
+            <option>egg</option><option>beef</option><option>almond</option><option>walnut</option><option>bay leaf</option>
+            <option>black olive</option><option>olive oil</option><option>vegetable oil</option><option>shallot</option>
+            <option>shrimp</option><option>black pepper</option><option>pepper</option><option>onion</option><option>tomato</option>
+          </select>
+        </div>
+
+        <div class="input-col">
+          <label class="form-label">Include Categories</label>
+          <select id="includeCategories" class="form-select" multiple size="8">
+            <option>Additive</option><option>Additive-Salt</option><option>Additive-Sugar</option><option>Additive-Vinegar</option>
+            <option>Additive-Yeast</option><option>Bakery</option><option>Berry</option><option>Beverage</option>
+            <option>Beverage Caffeinated</option><option>Beverage-Alcoholic</option><option>Cereal</option><option>Condiment</option>
+            <option>Dairy</option><option>Dish</option><option>Essential Oil</option><option>Fish</option><option>Flower</option>
+            <option>Fruit</option><option>Fungi</option><option>Fungus</option><option>Gourd</option><option>Herb</option>
+            <option>Legume</option><option>Maize</option><option>Meat</option><option>Nuts and Seeds</option><option>Plant</option>
+            <option>Plant Derivative</option><option>Seafood</option><option>Seed</option><option>Vegetable</option>
+          </select>
+        </div>
+
+        <div class="input-col">
+          <label class="form-label">Exclude Categories</label>
+          <select id="excludeCategories" class="form-select" multiple size="8">
+            <option>Additive</option><option>Additive-Salt</option><option>Additive-Sugar</option><option>Additive-Vinegar</option>
+            <option>Additive-Yeast</option><option>Bakery</option><option>Berry</option><option>Beverage</option>
+            <option>Beverage Caffeinated</option><option>Beverage-Alcoholic</option><option>Cereal</option><option>Condiment</option>
+            <option>Dairy</option><option>Dish</option><option>Essential Oil</option><option>Fish</option><option>Flower</option>
+            <option>Fruit</option><option>Fungi</option><option>Fungus</option><option>Gourd</option><option>Herb</option>
+            <option>Legume</option><option>Maize</option><option>Meat</option><option>Nuts and Seeds</option><option>Plant</option>
+            <option>Plant Derivative</option><option>Seafood</option><option>Seed</option><option>Vegetable</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="bottom-row">
+        <div class="input-group" style="flex: 1;">
+          <label class="form-label">Page</label>
+          <input type="number" class="form-control" id="page" value="1" placeholder="1">
+        </div>
+        <div class="input-group" style="flex: 3;">
+          <label class="form-label">Title (Optional)</label>
+          <input type="text" class="form-control" id="title" placeholder="Filter specific recipe title...">
+        </div>
+      </div>
+
+      <div class="full-width-row">
+        <label class="form-label">Exclude Dishes (Optional)</label>
+        <input type="text" class="form-control form-control-wide" id="user_prefrence" placeholder="e.g. Soup, Spicy, Fried">
+      </div>
+
+      <div class="btn-container">
+        <button type="submit" class="btn-primary">Apply Filters</button>
+        <a href="{{ url_for('choose') }}" class="btn-secondary">Back</a>
+      </div>
+    </form>
+
+    <hr>
+    <h5 class="result-title">Filtered Results</h5>
+    <pre id="result">Select options above and click Apply...</pre>
+  </div>
+</div>
+
+<script>
+function selectedValuesToString(selectId) {
+  const sel = document.getElementById(selectId);
+  if (!sel) return '';
+  const values = Array.from(sel.selectedOptions).map(o => o.value.trim()).filter(Boolean);
+  return values.join(' ');
+}
+
+document.getElementById('include-exclude-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  const payload = {
+    includeIngredients: selectedValuesToString('includeIngredients'),
+    excludeIngredients: selectedValuesToString('excludeIngredients'),
+    includeCategories: selectedValuesToString('includeCategories'),
+    excludeCategories: selectedValuesToString('excludeCategories'),
+    page: Number(document.getElementById('page').value || 1),
+    title: document.getElementById('title').value || '',
+    // Added user preference
+    user_prefrence: document.getElementById('user_prefrence').value || ''
+  };
+  
+  const resEl = document.getElementById('result');
+  const searchBtn = document.querySelector('.btn-primary');
+  
+  resEl.textContent = 'Filtering database...';
+  resEl.style.opacity = '0.5';
+  searchBtn.innerHTML = 'Filtering...';
+  searchBtn.disabled = true;
+  
+  try {
+    const r = await fetch('/api/include-exclude', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await r.json();
+    resEl.textContent = JSON.stringify(data, null, 2);
+    resEl.style.opacity = '1';
+  } catch (err) {
+    resEl.textContent = 'Error: ' + err;
+    resEl.style.color = '#ff6b6b';
+    resEl.style.opacity = '1';
+  } finally {
+    searchBtn.textContent = 'Apply Filters';
+    searchBtn.disabled = false;
+  }
+});
+</script>
+
+{% endblock %}

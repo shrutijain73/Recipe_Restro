@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Restro</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+      /* ---- RESET & LAYOUT ---- */
+      body, html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow-x: hidden;
+        background-color: #1a1a1a; /* Very dark fallback */
+        font-family: 'Lato', sans-serif;
+      }
+
+      /* ---- THEME COLORS (Midnight & Spice) ---- */
+      :root {
+        --accent-spice: #F29F05;      /* Warm Amber/Orange from the food */
+        --accent-hover: #D98E04;
+        --text-white: #FFFFFF;
+        --text-grey: #CCCCCC;
+        --glass-bg: rgba(20, 20, 20, 0.9); /* Deep Black/Charcoal Glass */
+        --nav-bg: rgba(0, 0, 0, 0.85);
+        --card-dark: #121212;
+      }
+
+      /* ---- NAVBAR ---- */
+      .custom-navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 3rem; 
+        background-color: var(--nav-bg);
+        backdrop-filter: blur(10px);
+        position: fixed; 
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+        box-sizing: border-box;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .brand-logo {
+        color: var(--text-white);
+        font-weight: 700;
+        font-size: 1.5rem;
+        font-family: 'Poppins', sans-serif;
+        text-decoration: none;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .brand-logo span { color: var(--accent-spice); } /* Accent color on part of logo */
+
+      .nav-actions { margin-left: auto; display: flex; gap: 1rem; }
+
+      /* ---- HERO SECTION (FULL SCREEN) ---- */
+      .hero-wrapper {
+        position: relative;
+        width: 100vw; 
+        height: 100vh;
+        
+        /* YOUR NEW PEXELS PHOTO */
+        background-image: url('https://images.pexels.com/photos/568370/pexels-photo-568370.jpeg');
+        
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        
+        display: flex;
+        align-items: center;
+      }
+      
+      /* Dark gradient overlay to ensure text pops against the food */
+      .hero-wrapper::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.2) 100%);
+        z-index: 1;
+      }
+
+      .hero-content {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding-left: 5rem;
+        padding-top: 60px;
+      }
+
+      /* ---- DARK GLASS TEXT CARD ---- */
+      .hero-text-box {
+        max-width: 600px;
+        background-color: var(--glass-bg);
+        padding: 3.5rem;
+        border-radius: 24px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .hero-title {
+        font-size: 3.5rem;
+        font-weight: 700;
+        line-height: 1;
+        margin: 0 0 0.5rem 0;
+        color: var(--text-white);
+        font-family: 'Poppins', sans-serif;
+      }
+      .hero-subtitle {
+        font-size: 1.2rem;
+        color: var(--accent-spice); /* Pop of orange */
+        margin-bottom: 2rem;
+        font-family: 'Lato', sans-serif;
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+      .hero-desc {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+        color: #dddddd;
+      }
+
+      /* List */
+      .hero-list { list-style: none; padding: 0; margin-bottom: 2.5rem; }
+      .hero-list li {
+        margin-bottom: 0.8rem;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        color: var(--text-white);
+        font-weight: 600;
+      }
+      .hero-list li::before {
+        content: "✓";
+        color: #000;
+        background-color: var(--accent-spice);
+        font-weight: 800;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 22px; height: 22px;
+        border-radius: 50%;
+        margin-right: 12px;
+        font-size: 0.8rem;
+        flex-shrink: 0;
+      }
+
+      /* Buttons */
+      .btn-custom {
+        display: inline-block;
+        padding: 0.9rem 2.2rem;
+        border-radius: 50px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: transform 0.2s;
+        font-family: 'Poppins', sans-serif;
+        cursor: pointer;
+      }
+      .btn-spice {
+        background-color: var(--accent-spice);
+        color: #000;
+        text-shadow: 0 1px 1px rgba(255,255,255,0.2);
+      }
+      .btn-spice:hover { background-color: var(--accent-hover); transform: translateY(-3px); }
+      
+      .btn-outline {
+        border: 2px solid var(--accent-spice);
+        color: var(--accent-spice);
+        margin-left: 10px;
+      }
+      .btn-outline:hover { background-color: var(--accent-spice); color: #000; transform: translateY(-3px); }
+
+      /* Navbar Buttons */
+      .nav-btn {
+        padding: 0.6rem 1.8rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-decoration: none;
+        transition: 0.2s;
+        font-family: 'Poppins', sans-serif;
+        cursor: pointer;
+      }
+      .nav-login { border: 1px solid var(--text-white); color: var(--text-white); background: transparent; }
+      .nav-login:hover { background: var(--text-white); color: #000; }
+      .nav-signup { background: var(--accent-spice); color: #000; }
+      .nav-signup:hover { background: var(--accent-hover); }
+
+      /* Scroll Arrow */
+      .scroll-indicator {
+        position: absolute;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10;
+        animation: bounce 2s infinite;
+        cursor: pointer;
+      }
+      .scroll-indicator svg { width: 45px; height: 45px; fill: var(--accent-spice); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); }
+      
+      @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {transform: translateX(-50%) translateY(0);}
+        40% {transform: translateX(-50%) translateY(-10px);}
+        60% {transform: translateX(-50%) translateY(-5px);}
+      }
+
+      /* ---- RECIPES SECTION ---- */
+      .recipe-container { 
+        width: 100%;
+        max-width: 1200px; 
+        margin: 0 auto; 
+        padding: 5rem 2rem; 
+      }
+      
+      .section-heading {
+        color: var(--accent-spice); 
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 2.5rem;
+        border-bottom: 3px solid var(--accent-spice);
+        display: inline-block;
+        padding-bottom: 0.5rem;
+        font-family: 'Poppins', sans-serif;
+      }
+      
+      .food-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 2.5rem;
+        padding-bottom: 5rem;
+      }
+      .food-card {
+        background: var(--card-dark);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        position: relative;
+        transition: transform 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .food-card:hover { transform: translateY(-8px); border-color: var(--accent-spice); }
+      .food-card img { width: 100%; height: 280px; object-fit: cover; display: block; }
+      .card-gradient {
+        position: absolute; bottom: 0; left: 0; width: 100%; height: 70%;
+        background: linear-gradient(to top, rgba(0,0,0,0.95), transparent); pointer-events: none;
+      }
+      .card-title {
+        position: absolute; bottom: 20px; left: 20px; color: var(--text-white);
+        font-weight: 700; font-size: 1.25rem; font-family: 'Poppins', sans-serif; z-index: 2;
+      }
+
+      /* Mobile */
+      @media (max-width: 900px) {
+        .hero-wrapper { height: auto; min-height: 100vh; padding-top: 100px; padding-bottom: 50px; }
+        .hero-content { padding-left: 1.5rem; padding-right: 1.5rem; text-align: center; }
+        .hero-text-box { margin: 0 auto; padding: 2rem; }
+        .brand-logo { display: none; }
+        .custom-navbar { position: relative; background: #222; }
+        .hero-list li { justify-content: center; }
+      }
+    </style>
+</head>
+<body>
+
+<div class="custom-navbar">
+  <a href="#" class="brand-logo">Recipe <span>Restro</span></a>
+  <div class="nav-actions">
+    <a href="{{ url_for('login') }}" class="nav-btn nav-login">Login</a>
+    <a href="{{ url_for('signup') }}" class="nav-btn nav-signup">Signup</a>
+  </div>
+</div>
+
+<div class="hero-wrapper">
+  
+  <div class="hero-content">
+    <div class="hero-text-box">
+      <h1 class="hero-title">Recipe <span style="color: var(--accent-spice);">Restro</span></h1>
+      <p class="hero-subtitle">Don't Just Eat. Experience.</p>
+      
+      <p class="hero-desc">
+        Stop guessing what to cook. Your personal AI Chef is here to curate menus that fit your macros, your mood, and your tastebuds.<br>
+        No planning. No stress. Just meals that fit your lifestyle perfectly.
+      </p>
+
+      <ul class="hero-list">
+        <li>Protein Diet for Gym — find high-protein meals</li>
+        <li>Energy Diet — meals optimized for energy/calories</li>
+        <li>Recipe by Region — Indian, Italian, Mediterranean</li>
+        <li>Recipe by Title — search by name (e.g., "Pasta Delight")</li>
+      </ul>
+
+      <p style="color: var(--text-grey); font-style: italic; margin-bottom: 2.5rem; font-weight: 600;">Your goals. Your food. Instantly.</p>
+
+      <div>
+        <a href="{{ url_for('signup') }}" class="btn-custom btn-spice">Create an account</a>
+        <a href="{{ url_for('login') }}" class="btn-custom btn-outline">Sign in</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-indicator">
+    <svg viewBox="0 0 24 24">
+      <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"></path>
+    </svg>
+  </div>
+</div>
+
+<div class="recipe-container">
+  <h3 class="section-heading">Inspired Recipes</h3>
+  <div class="food-grid">
+    <div class="food-card">
+      <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80" alt="Burger">
+      <div class="card-gradient"></div>
+      <div class="card-title">Smoky Beef Burger</div>
+    </div>
+    <div class="food-card">
+      <img src="https://images.unsplash.com/photo-1563379926898-05f4575a45d8?auto=format&fit=crop&w=800&q=80" alt="Pasta">
+      <div class="card-gradient"></div>
+      <div class="card-title">Creamy Italian Pasta</div>
+    </div>
+    <div class="food-card">
+      <img src="https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?q=80&w=800&auto=format&fit=crop" alt="Fries">
+      <div class="card-gradient"></div>
+      <div class="card-title">Crispy French Fries</div>
+    </div>
+    <div class="food-card">
+      <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=800&q=80" alt="Salad">
+      <div class="card-gradient"></div>
+      <div class="card-title">Fresh Veggie Bowl</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

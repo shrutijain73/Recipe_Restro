@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="preload" as="image" href="https://images.pexels.com/photos/568370/pexels-photo-568370.jpeg?auto=compress&cs=tinysrgb&w=2000">
+
+<style>
+  /* ---- RESET ---- */
+  nav:not(.custom-navbar), .navbar:not(.custom-navbar), .bg-dark { display: none !important; }
+
+  /* ---- THEME COLORS ---- */
+  :root {
+    --accent-spice: #F29F05;       
+    --accent-hover: #D98E04;
+    --text-white: #FFFFFF;
+    --text-grey: #CCCCCC;
+    --glass-card: rgba(20, 20, 20, 0.85); 
+    --input-bg: rgba(50, 50, 50, 0.6);    
+    --input-border: #555555;
+    --error-red: #ff6b6b;
+  }
+
+  body { 
+    font-family: 'Plus Jakarta Sans', sans-serif; 
+    margin: 0; padding: 0;
+    background-color: #1a1a1a;
+  }
+
+  /* ---- BACKGROUND WITH EXTREME BLUR ---- */
+  .auth-background {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 1;
+    
+    background-image: url('https://images.pexels.com/photos/568370/pexels-photo-568370.jpeg?auto=compress&cs=tinysrgb&w=2000');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    will-change: transform; 
+  }
+  
+  .auth-background::before {
+    content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.4); 
+    
+    /* EXTREME BLUR */
+    backdrop-filter: blur(30px);      
+    -webkit-backdrop-filter: blur(30px);
+  }
+
+  /* ---- WRAPPER ---- */
+  .auth-wrapper {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 2; display: flex; justify-content: center; align-items: center;
+    padding: 1rem;
+    overflow-y: auto; /* Allow scroll on small screens */
+  }
+
+  /* ---- CARD ---- */
+  .auth-card {
+    background: var(--glass-card);
+    width: 100%; max-width: 450px;
+    padding: 2.5rem 2.5rem;
+    border-radius: 24px;
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.95);
+    text-align: center;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    margin: auto;
+  }
+
+  /* ---- TYPOGRAPHY ---- */
+  .brand-logo {
+    display: inline-block; font-weight: 800; font-size: 1.5rem;
+    color: var(--text-white); text-decoration: none; margin-bottom: 1.5rem;
+    letter-spacing: -0.5px;
+  }
+  .brand-logo span { color: var(--accent-spice); }
+
+  h2 { font-weight: 800; color: var(--text-white); margin-bottom: 0.5rem; font-size: 1.8rem; text-transform: uppercase; }
+  .subtitle { color: var(--text-grey); font-size: 0.95rem; margin-bottom: 2rem; }
+
+  /* ---- INPUTS ---- */
+  .form-group { text-align: left; margin-bottom: 1rem; }
+  
+  label { 
+    font-weight: 600; font-size: 0.8rem; 
+    color: var(--accent-spice); 
+    margin-bottom: 0.3rem; display: block; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  
+  .form-control {
+    background: var(--input-bg); 
+    border: 1px solid var(--input-border);
+    color: white;
+    border-radius: 8px;
+    padding: 0.8rem 1rem; font-size: 0.95rem; width: 100%;
+    transition: all 0.2s; box-sizing: border-box;
+  }
+  
+  .form-control::placeholder { color: #888; }
+
+  .form-control:focus {
+    background: #333; 
+    border-color: var(--accent-spice); 
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(242, 159, 5, 0.2);
+  }
+
+  /* Validation Styles for Dark Theme */
+  .form-control.is-invalid { border-color: var(--error-red); }
+  .invalid-feedback { color: var(--error-red); font-size: 0.8rem; margin-top: 4px; text-align: left; }
+  .form-text { font-size: 0.75rem; color: #aaa; margin-top: 4px; text-align: left; }
+
+  /* ---- BUTTON ---- */
+  .btn-submit {
+    background: var(--accent-spice); color: #000;
+    width: 100%; padding: 1rem; border-radius: 8px;
+    font-weight: 700; font-size: 1rem; border: none; cursor: pointer;
+    transition: all 0.2s; margin-top: 1rem;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .btn-submit:hover {
+    background: var(--accent-hover); transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(242, 159, 5, 0.3);
+  }
+
+  .link-alt {
+    display: block; margin-top: 1.5rem; color: var(--text-grey); font-size: 0.9rem; text-decoration: none;
+  }
+  .link-alt span { color: var(--accent-spice); font-weight: 700; }
+  .link-alt:hover span { text-decoration: underline; }
+
+  /* Flash Messages */
+  .alert { 
+    border-radius: 8px; padding: 0.8rem; margin-bottom: 1rem; 
+    font-size: 0.9rem; text-align: left; 
+    background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.2); color: white;
+  }
+</style>
+
+<div class="auth-background"></div>
+
+<div class="auth-wrapper">
+  <div class="auth-card">
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" style="float:right; border:none; background:none; color:white; font-size:1.2rem; line-height:0.8;">&times;</button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <a href="{{ url_for('home') }}" class="brand-logo">Recipe <span>Restro</span></a>
+
+    <h2>Create Account</h2>
+    <p class="subtitle">Join the revolution.</p>
+
+    <form id="signup-form" method="POST" action="{{ url_for('signup') }}" novalidate>
+      
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" class="form-control" id="username" name="username" placeholder="Choose a username" required>
+        <div class="invalid-feedback">Please enter a username.</div>
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" class="form-control" id="email" name="email" placeholder="you@example.com" required>
+        <div class="invalid-feedback">Please enter a valid email.</div>
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" class="form-control" id="password" name="password" placeholder="At least 6 chars" minlength="6" required>
+        <div class="form-text">Must be at least 6 characters.</div>
+        <div class="invalid-feedback">Password must be at least 6 characters.</div>
+      </div>
+
+      <div class="form-group">
+        <label>Confirm Password</label>
+        <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Repeat password" required>
+        <div id="confirm-feedback" class="invalid-feedback">Passwords do not match.</div>
+      </div>
+
+      <button id="submit-btn" type="submit" class="btn-submit">Sign up</button>
+
+      <a class="link-alt" href="{{ url_for('login') }}">
+        Already have an account? <span>Log in</span>
+      </a>
+    </form>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const form = document.getElementById('signup-form');
+    const username = document.getElementById('username');
+    const email = document.getElementById('email');
+    const password = document.getElementById('password');
+    const confirm = document.getElementById('confirm_password');
+    const confirmFeedback = document.getElementById('confirm-feedback');
+
+    form.addEventListener('submit', function (e) {
+      // Clear previous errors
+      [username, email, password, confirm].forEach(input => input.classList.remove('is-invalid'));
+      let valid = true;
+
+      if (!username.value.trim()) { username.classList.add('is-invalid'); valid = false; }
+      if (!email.checkValidity()) { email.classList.add('is-invalid'); valid = false; }
+      if (!password.checkValidity()) { password.classList.add('is-invalid'); valid = false; }
+      
+      if (password.value !== confirm.value) {
+        confirm.classList.add('is-invalid');
+        confirmFeedback.textContent = 'Passwords do not match.';
+        valid = false;
+      }
+
+      if (!valid) { e.preventDefault(); }
+    });
+    
+    // Live check for password match
+    function checkMatch() {
+      if(confirm.value && password.value !== confirm.value) {
+        confirm.classList.add('is-invalid');
+      } else {
+        confirm.classList.remove('is-invalid');
+      }
+    }
+    confirm.addEventListener('input', checkMatch);
+  })();
+</script>
+
+{% endblock %}

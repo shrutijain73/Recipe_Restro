@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  /* ---- RESET DEFAULT NAVBAR ---- */
+  nav:not(.custom-navbar), .navbar:not(.custom-navbar) { display: none !important; }
+
+  /* ---- VARIABLES ---- */
+  :root {
+    --spice: #F29F05;
+    --spice-glow: rgba(242, 159, 5, 0.4);
+    --bg-dark: #050505;
+    --card-matte: #121212;
+    --border-light: rgba(255,255,255,0.08);
+  }
+
+  /* ---- BACKGROUND ---- */
+  body { 
+    background-color: var(--bg-dark) !important; 
+    overflow-x: hidden;
+  }
+
+  /* Cinematic Smoke Background */
+  .cinematic-bg {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: -1; background: #050505;
+  }
+  .fog {
+    position: absolute; width: 60vw; height: 60vw; border-radius: 50%;
+    filter: blur(80px); opacity: 0.6; animation: drift 20s infinite alternate ease-in-out;
+  }
+  .fog-1 { top: -10%; left: -10%; background: radial-gradient(circle, #1a1a1a, transparent 70%); }
+  .fog-2 { bottom: -10%; right: -10%; background: radial-gradient(circle, #151515, transparent 70%); animation-delay: -5s; }
+  .spotlight {
+    position: absolute; top: 20%; left: 50%; transform: translate(-50%, -50%);
+    width: 80vw; height: 40vh; background: radial-gradient(ellipse, var(--spice-glow), transparent 70%);
+    filter: blur(80px); opacity: 0.5;
+  }
+  .noise-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  @keyframes drift { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(20px, 40px) scale(1.1); } }
+
+  /* ---- CUSTOM FULL-WIDTH NAVBAR ---- */
+  .custom-navbar {
+    background: rgba(5, 5, 5, 0.95);
+    backdrop-filter: blur(15px);
+    border-bottom: 1px solid var(--border-light);
+    width: 100%; 
+    padding: 0.8rem 3rem; 
+    position: fixed; top: 0; left: 0; 
+    z-index: 10000;
+    display: flex; align-items: center; justify-content: space-between;
+    box-sizing: border-box;
+  }
+
+  /* LEFT SIDE: LOGO ONLY (Home tab removed) */
+  .nav-left { 
+    display: flex; align-items: center; gap: 2rem; 
+    position: relative; z-index: 10001; 
+  }
+
+  /* LOGO */
+  .brand-logo { 
+    color: white; font-weight: 700; font-family: 'Poppins', sans-serif; 
+    text-decoration: none; font-size: 1.6rem; letter-spacing: -0.5px; 
+  }
+  .brand-logo span { color: var(--spice); }
+
+  /* RIGHT SIDE */
+  .nav-right { display: flex; align-items: center; gap: 1.5rem; }
+
+  .user-greeting { font-size: 0.95rem; color: #888; font-weight: 500; }
+  .user-greeting span { color: var(--spice); font-weight: 600; }
+
+  .btn-logout {
+    padding: 0.5rem 1.4rem; 
+    background: transparent; border: 1px solid #333;
+    border-radius: 50px; color: #fff; font-size: 0.85rem; text-decoration: none; 
+    transition: 0.3s; font-weight: 600; cursor: pointer;
+  }
+  .btn-logout:hover { background: var(--spice); border-color: var(--spice); color: black; }
+
+  /* ---- LAYOUT ---- */
+  .main-container {
+    max-width: 1200px; margin: 8rem auto 4rem auto; padding: 0 1.5rem;
+    position: relative; z-index: 2;
+  }
+
+  .page-header { text-align: center; margin-bottom: 3.5rem; }
+  .page-header h2 {
+    font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 3.5rem;
+    color: white; margin-bottom: 0.5rem;
+  }
+  .page-header p { font-size: 1.1rem; color: #888; }
+
+  /* ---- AESTHETIC CARDS ---- */
+  .options-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.5rem;
+  }
+
+  .option-card {
+    position: relative; background-color: var(--card-matte); 
+    border-radius: 24px; height: 260px; 
+    text-decoration: none; overflow: hidden;
+    border: 1px solid var(--border-light);
+    display: flex; flex-direction: column; justify-content: flex-end; padding: 2rem;
+    transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  /* 1. PHOTO LAYER (Dark Aesthetic) */
+  .card-bg-img {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background-size: cover; background-position: center;
+    transition: transform 0.6s ease, filter 0.6s ease; z-index: 0;
+    
+    /* MOODY VIBE: Dim brightness, high contrast, slight fade */
+    filter: brightness(0.4) contrast(1.1) grayscale(30%);
+  }
+
+  /* 2. GRADIENT OVERLAY (Bottom only) */
+  .card-overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(0,0,0,0.9) 90%);
+    z-index: 1; transition: opacity 0.4s ease;
+  }
+
+  /* Images */
+  .img-protein { background-image: url('https://images.pexels.com/photos/65175/pexels-photo-65175.jpeg?auto=compress&cs=tinysrgb&w=800'); } 
+  .img-energy  { background-image: url('https://images.pexels.com/photos/1092730/pexels-photo-1092730.jpeg?auto=compress&cs=tinysrgb&w=800'); } 
+  .img-carbs   { background-image: url('https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?auto=compress&cs=tinysrgb&w=800'); } 
+  .img-region  { background-image: url('https://images.pexels.com/photos/941861/pexels-photo-941861.jpeg?auto=compress&cs=tinysrgb&w=800'); } 
+  .img-search  { background-image: url('https://images.pexels.com/photos/326278/pexels-photo-326278.jpeg?auto=compress&cs=tinysrgb&w=800'); } 
+  .img-filter  { background-image: url('https://images.pexels.com/photos/1435904/pexels-photo-1435904.jpeg?auto=compress&cs=tinysrgb&w=800'); } 
+
+  /* HOVER EFFECTS: Reveal full beauty */
+  .option-card:hover { transform: translateY(-8px); border-color: var(--spice); box-shadow: 0 25px 50px rgba(0,0,0,0.7); }
+  
+  .option-card:hover .card-bg-img { 
+    transform: scale(1.05); 
+    /* Back to full color and brightness on hover */
+    filter: brightness(1) contrast(1) grayscale(0%);
+  }
+
+  /* Text & Icons */
+  .card-content { position: relative; z-index: 2; transform: translateY(0); transition: transform 0.4s; }
+  
+  .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+  
+  .option-card h5 { color: white; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.7rem; margin: 0; text-shadow: 0 4px 10px rgba(0,0,0,0.8); }
+  .option-card p { color: #ddd; font-size: 1rem; line-height: 1.5; margin: 0; opacity: 0.9; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+  
+  .arrow-icon { font-size: 1.5rem; color: white; opacity: 0; transform: translateX(-20px); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+  .option-card:hover .arrow-icon { opacity: 1; transform: translateX(0); color: var(--spice); }
+
+</style>
+
+<div class="cinematic-bg"><div class="fog fog-1"></div><div class="fog fog-2"></div><div class="spotlight"></div></div>
+<div class="noise-overlay"></div>
+
+<nav class="custom-navbar">
+  <div class="nav-left">
+    <a href="{{ url_for('home') }}" class="brand-logo">Recipe <span>Restro</span></a>
+  </div>
+
+  <div class="nav-right">
+    <div class="user-greeting">Hello, <span>{{ username }}</span></div>
+    <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+  </div>
+</nav>
+
+<div class="main-container">
+  <div class="page-header">
+    <h2>Create a Meal</h2>
+    <p>Select a generation method below.</p>
+  </div>
+
+  <div class="options-grid">
+    <a href="{{ url_for('choose_protein') }}" class="option-card">
+      <div class="card-bg-img img-protein"></div><div class="card-overlay"></div>
+      <div class="card-content">
+        <div class="card-top"><h5>Recipe by Protein</h5><span class="arrow-icon">&rarr;</span></div>
+        <p>High-protein meals tailored for muscle gain.</p>
+      </div>
+    </a>
+
+    <a href="{{ url_for('choose_energy') }}" class="option-card">
+      <div class="card-bg-img img-energy"></div><div class="card-overlay"></div>
+      <div class="card-content">
+        <div class="card-top"><h5>Recipe by Energy</h5><span class="arrow-icon">&rarr;</span></div>
+        <p>Boost your day with calorie optimized recipes.</p>
+      </div>
+    </a>
+
+    <a href="{{ url_for('choose_carbs') }}" class="option-card">
+      <div class="card-bg-img img-carbs"></div><div class="card-overlay"></div>
+      <div class="card-content">
+        <div class="card-top"><h5>Diet by Carbs</h5><span class="arrow-icon">&rarr;</span></div>
+        <p>Carb-loading or low-carb? Filter by content.</p>
+      </div>
+    </a>
+
+    <a href="{{ url_for('choose_region') }}" class="option-card">
+      <div class="card-bg-img img-region"></div><div class="card-overlay"></div>
+      <div class="card-content">
+        <div class="card-top"><h5>Recipes by Region</h5><span class="arrow-icon">&rarr;</span></div>
+        <p>Indian, Italian, Mediterranean, and more.</p>
+      </div>
+    </a>
+
+    <a href="{{ url_for('choose_recipe_title') }}" class="option-card">
+      <div class="card-bg-img img-search"></div><div class="card-overlay"></div>
+      <div class="card-content">
+        <div class="card-top"><h5>Search by Title</h5><span class="arrow-icon">&rarr;</span></div>
+        <p>Know what you want? Search by name.</p>
+      </div>
+    </a>
+
+    <a href="{{ url_for('choose_include_exclude') }}" class="option-card">
+      <div class="card-bg-img img-filter"></div><div class="card-overlay"></div>
+      <div class="card-content">
+        <div class="card-top"><h5>Custom Filter</h5><span class="arrow-icon">&rarr;</span></div>
+        <p>Include ingredients you love, ban the ones you hate.</p>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+{% endblock %}

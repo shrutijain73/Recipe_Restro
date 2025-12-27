@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Recipe Restro</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+      :root{
+        /* Brand / theme */
+        --accent-1: #ff7a1f;     /* juicy orange */
+        --accent-2: #ffb055;     
+        --accent-3: #63c77b;     
+        --accent-4: #ffdca8;     
+        --muted: #a0a0a0;       
+
+        /* header/footer */
+        --header-bg: #050505;       
+        --header-text: #ffffff;
+
+        /* DARK THEME VARIABLES */
+        --page-bg-top: #0a0a0a;     
+        --page-bg-bottom: #050505;  
+        --card-bg: #141414;         
+        --border-color: rgba(255,255,255,0.08);
+      }
+
+      /* Page layout */
+      html, body { height: 100%; }
+      
+      body {
+        display: flex; flex-direction: column; min-height: 100vh;
+        margin: 0;
+        font-family: "Inter", sans-serif;
+        color: #ffffff;
+        
+        background: radial-gradient(800px 400px at 10% 10%, rgba(255,122,31,0.05), transparent 8%),
+                    radial-gradient(600px 300px at 90% 80%, rgba(99,199,123,0.03), transparent 8%),
+                    linear-gradient(180deg, var(--page-bg-top) 0%, var(--page-bg-bottom) 100%);
+      }
+
+      /* Header */
+      .main-navbar {
+        min-height: 76px;
+        display: flex; align-items: center;
+        border-bottom: 1px solid var(--border-color);
+        padding-top: .5rem; padding-bottom: .5rem;
+        background: var(--header-bg); color: var(--header-text);
+      }
+
+      /* BRAND FONT UPDATE: Poppins */
+      .navbar-brand {
+        font-family: "Poppins", sans-serif;
+        font-weight: 700; font-size: 1.6rem;
+        color: var(--header-text);
+        display: flex; align-items: center; gap: .6rem;
+        letter-spacing: -0.5px; text-decoration: none;
+      }
+      .navbar-brand .brand-accent {
+        display:inline-block; width:12px; height:12px;
+        background: linear-gradient(180deg,var(--accent-2),var(--accent-1));
+        border-radius:50%; box-shadow: 0 2px 8px rgba(255,122,31,0.18);
+      }
+
+      /* User box on header */
+      .user-box {
+        display: inline-flex; align-items: center; gap: .5rem;
+        padding: .35rem .6rem; border-radius: .5rem;
+        border: 1px solid var(--border-color);
+        background: rgba(255,255,255,0.05); color: var(--header-text);
+      }
+      .user-box .username { color: var(--header-text); font-weight: 600; }
+      .user-box .logout-btn {
+        background: var(--accent-1); color: #fff;
+        border-radius: .35rem; padding: .35rem .55rem;
+        font-size: .9rem; text-decoration: none; border: none;
+      }
+
+      .navbar .navbar-right { display:flex; align-items:center; gap:.5rem; }
+      .page-content { flex: 1 0 auto; }
+
+      /* Themed UI components */
+      .card, .feature, .how-item {
+        background: var(--card-bg); border: 1px solid var(--border-color);
+        border-radius: .6rem; box-shadow: 0 8px 22px rgba(0,0,0,0.2); color: #ffffff;
+      }
+
+      /* Footer */
+      .site-footer {
+        background: #000; color: #fff;
+        padding: 1.25rem 0; margin-top: 0; flex-shrink: 0;
+        border-top: 1px solid var(--border-color);
+      }
+      .site-footer a { color: var(--accent-4); }
+
+      /* Form inputs (Dark Mode) */
+      .form-control {
+        background-color: #1a1a1a; color: #fff;
+        border-radius: .45rem; border: 1px solid var(--border-color);
+      }
+      .form-control:focus {
+        background-color: #222; color: #fff;
+        border-color: var(--accent-1);
+        box-shadow: 0 0 0 0.25rem rgba(255, 122, 31, 0.25);
+      }
+
+      .card .card-body { padding: 1.25rem; }
+      .how-item { padding: 1rem; }
+
+      @media (max-width: 576px) { .navbar-brand { font-size: 1.25rem; } }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar main-navbar">
+      <div class="container-fluid d-flex align-items-center justify-content-between">
+        <a class="navbar-brand" href="{{ url_for('home') }}">
+          <span class="brand-accent" aria-hidden="true"></span>
+          Recipe Restro
+        </a>
+
+        <div class="navbar-right">
+          {% if session.username %}
+          <div class="user-box" role="group" aria-label="User controls">
+            <span class="username">Hello, {{ session.username }}</span>
+            <a class="logout-btn" href="{{ url_for('logout') }}">Logout</a>
+          </div>
+          {% else %}
+          <div class="user-box">
+            <a class="btn btn-sm btn-outline-light me-2" href="{{ url_for('login') }}">Login</a>
+            <a class="btn btn-sm btn-light" href="{{ url_for('signup') }}">Signup</a>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </nav>
+
+    <main class="page-content container my-4">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+          <div class="mb-2 mb-md-0">
+            <strong>Recipe Restro</strong> — tasty meal suggestions & recipe search
+            <div><small>Made with care</small></div>
+          </div>
+
+          <div class="text-md-end">
+            <div><small>Need help? <a href="{{ url_for('home') }}">Documentation</a> • <a href="{{ url_for('signup') }}">Sign up</a></small></div>
+            <div class="mt-1"><small>© 2025 Recipe Restro</small></div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

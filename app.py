@@ -311,5 +311,3 @@ def api_ingredients():
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-api_protein()
